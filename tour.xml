@@ -1,0 +1,1230 @@
+<krpano version="1.19" title="山东大学校史馆">
+
+	<include url="skin/vtourskin.xml" />
+
+    <include url="include/textbox.xml" />
+    <include url="include/textboxsetting.xml" />
+    <include url="plugins/showtext.xml" />
+    <include url="include/style.xml" />
+
+
+    <plugin name="soundinterface"
+        url="%SWFPATH%/plugins/soundinterface.swf"
+        alturl="%SWFPATH%/plugins/soundinterface.js"
+        preload="true"
+        rootpath=""
+        volume="1.0"
+        keep="true"
+        mute="false"
+        />
+	<!-- customize skin settings: maps, gyro, webvr, thumbnails, tooltips, layout, design, ... -->
+	<skin_settings maps="false"
+	               maps_type="bing"
+	               maps_bing_api_key=""
+	               maps_zoombuttons="false"
+	               gyro="true"
+	               webvr="true"
+                   bgm="true"
+	               littleplanetintro="false"
+	               title="true"
+	               thumbs="true"
+	               thumbs_width="120" thumbs_height="80" thumbs_padding="10" thumbs_crop="0|40|240|160"
+	               thumbs_opened="false"
+	               thumbs_text="false"
+	               thumbs_dragging="true"
+	               thumbs_onhoverscrolling="false"
+	               thumbs_scrollbuttons="false"
+	               thumbs_scrollindicator="false"
+	               thumbs_loop="false"
+	               tooltips_buttons="false"
+	               tooltips_thumbs="false"
+	               tooltips_hotspots="false"
+	               tooltips_mapspots="false"
+	               deeplinking="false"
+	               loadscene_flags="MERGE"
+	               loadscene_blend="OPENBLEND(0.5, 0.0, 0.75, 0.05, linear)"
+	               loadscene_blend_prev="SLIDEBLEND(0.5, 180, 0.75, linear)"
+	               loadscene_blend_next="SLIDEBLEND(0.5,   0, 0.75, linear)"
+	               loadingtext="loading..."
+	               layout_width="100%"
+	               layout_maxwidth="814"
+	               controlbar_width="-24"
+	               controlbar_height="40"
+	               controlbar_offset="20"
+	               controlbar_offset_closed="-40"
+	               controlbar_overlap.no-fractionalscaling="10"
+	               controlbar_overlap.fractionalscaling="0"
+	               design_skin_images="vtourskin.png"
+	               design_bgcolor="0x2D3E50"
+	               design_bgalpha="0.8"
+	               design_bgborder="0"
+	               design_bgroundedge="1"
+	               design_bgshadow="0 4 10 0x000000 0.3"
+	               design_thumbborder_bgborder="3 0xFFFFFF 1.0"
+	               design_thumbborder_padding="2"
+	               design_thumbborder_bgroundedge="0"
+	               design_text_css="color:#FFFFFF; font-family:Arial;"
+	               design_text_shadow="1"
+	               />
+
+    <memory maxmem="350" devices="Desktop+Flash" />
+    <memory maxmem="250" devices="Desktop+HTML5" />
+    <memory maxmem="50"  devices="Mobile|Tablet" />
+    <memory maxmem="40"  devices="iOS" />
+    <memory maxmem="50"  devices="iOS7.1" />
+  <events name="startlogoevents" keep="true" onxmlcomplete="start_animate();" onloadcomplete="loadcomplete();"/>
+<!--  -->
+	<!-- startup action - load the first scene -->
+	<action name="startup" autorun="onstart">
+		if(startscene === null OR !scene[get(startscene)], copy(startscene,scene[0].name); );
+		loadscene(get(startscene), null, MERGE);
+		if(startactions !== null, startactions() );
+        if(!device.mobile, set(layer[mapcontainer].visible, true), set(autorotate.enabled, false));
+        playsound(bg, include/sound/bg.mp3,0);
+	</action>
+
+  <autorotate name="autorotate" enabled="true"
+    waittime="10.0"
+    speed="-3.0"
+    horizon="0.0"
+    />
+    <action name="start_animate">
+        set(loading_isloading, true);
+        set(i, 0);
+        set(layer['show'].visible, true);
+        loading_animate();
+        set(layer['logoColor2'].visible, true);
+        loadinglogo_animate();
+    </action>
+    <action name="loadcomplete">
+
+        ifnot(layer[enter].enabled, 
+        set(layer[enter].enabled,true); 
+        set(layer[enter].visible,true);
+        set(loading_isloading, false);
+        delayedcall(4,tween(layer[start_container].ox,-2500,1));
+        delayedcall(5,set(layer[start_container].enabled,false);set(layer[start_container].visible,false));
+        );
+    </action>
+    <action name="loadinglogo_animate">
+        asyncloop(loading_isloading,
+            mul(pv, progress.progress, 202);
+            copy(layer['logoColor2'].height, pv);
+          );
+
+    </action>
+    <action name="loading_animate">
+    if(loading_isloading,
+      mul(ls, get(i), 30);
+      calc(t, 40 + ls);
+      set(layer['show'].x, get(t));
+      inc(i);
+      if(i == 5, set(i, 0););
+      delayedcall(1, loading_animate() );
+      );
+  </action>
+
+    <layer name="start_container" preload="true" alpha="1" onloaded="tween(alpha,1.0);" handcursor="true" enabled="true" children="true" visible="true" zorder="90" type="container" maskchildren="true" keep="true"  width="100%" height="100%" bgcolor="0xFFFFFF" bgalpha="1" >
+      <layer name="center_container" preload="true" alpha="1" children="true" visible="true" zorder="90" type="container" maskchildren="true" keep="true" width="380" height="354" x="0" y="30%"  align="centertop">
+        <layer name="logo" zorder="100" preload="true" keep="true" width="178" height="210" x="0" y="0" align="lefttop" url="include/images/logo.png" scale="1" alpha="1" enabled="false" />
+        <layer name="logoColor2" type="container" width="150" height="204" zorder="99" x="3" y="145" align="leftbottom" scale="1" alpha="1" enabled="false" bgcolor="0x9c0c13" bgalpha="1.0" visible="false"/>
+        <layer name="topright" type="image" url="include/images/topright.png" zorder="99" x="0" y="80" align="righttop" scale="1" alpha="1" />
+        <layer name="enter" zorder="100" keep="true" x="0" y="234" align="centertop" url="include/images/enter.png" scale="1" alpha="1" enabled="false" visible="false" onclick="tween(layer[start_container].ox,-2500,1);"/>
+      </layer>
+    </layer>
+    
+    <style name="dot" y="20" type="container" width="20" height="20" bgcolor="0xcf9640" bgalpha="1.0" bgroundedge="10" alpha="1.0" scale="0.5" align="lefttop" visible="true" zorder="99" />  
+
+    <!-- 启动画面结束 -->
+
+    <events name="onautorotateevents" keep="true" onautorotateoneround="nextscene()"/>
+
+    <action name="nextscene">
+        autorotate.stop();wait(1);
+        set(ns, get(scene[get(xml.scene)].index));
+        set(maxs, get(scene.count));
+        add(ns,1);
+        if(ns == maxs, set(ns,0));
+        loadscene(get(scene[get(ns)].name), null, MERGE, BLEND(1.5));
+        autorotate.start();
+    </action>
+
+
+    <!-- 自定义地图开始， mapcontainer是一个半透明容器container，keep为true，确保了切换场景时地图不会被移除，mapcontainer是其它子layer的父亲，bgcolor以及bgalpha是颜色和透明度的设定，通过改动align以及xy坐标可以确定地图的位置，通过改变width和height确定该矩形的宽度和高度，-->
+    <layer name="mapcontainer" keep="true" type="container" bgcolor="0x000000" bgalpha="0.5" align="lefttop" x="0" y="0" width="215" height="204" visible="false">
+    <!-- map的url属性可以改成我们自己的地图文件，align一定是lefttop，这是为了确定热点位置，其坐标系以左上角为0点，也是为了方便我们通过ps等方法来获取热点的值。-->
+        <layer name="map" url="include/images/b1map.jpg" align="lefttop" x="2" y="2" width="prop" height="200" handcursor="false" scalechildren="true">
+            <!-- 雷达遮罩部分，确保了雷达的扇形不会超出范围，这里也就是地图map的范围。注意这里也应该是对齐左上角，下面的各种layer通通都是对齐左上角，不然坐标系不统一的话，就很难确定热点的位置 -->
+            <layer name="radarmask" type="container" align="lefttop" width="100%" height="100%" maskchildren="true">
+
+                <!-- 雷达插件 zoder=1 在开始时为隐藏，只有激活activetespot这个action时才会显示 zorder为叠放次序 数字越大越靠前 -->
+                <layer name="radar" visible="false"
+                       url="%SWFPATH%/plugins/radar.swf" alturl="%SWFPATH%/plugins/radar.js"
+                       align="lefttop" edge="center" zorder="1"
+                       scale="0.15"
+                       fillcolor="0xFFFFFF" fillalpha="0.8"
+                       linecolor="0xFF0000" linewidth="0.5" linealpha="0.5"
+                       headingoffset="0"
+                       />
+
+                <!-- 热点 zorder=2，用style来统一处理 所有layer都载入了一个名为spot的style，注意这里spot是由0开始，而不是由1开始的，因此在一般情况下，地图点与场景一一对应，而场景的index是从0开始的，所以我们可以利用这一点提高代码的可读性-->
+                <layer name="spot0" style="spot" x="104" y="36"  />
+                <layer name="spot1" style="spot" x="143" y="42"  />
+                <layer name="spot2" style="spot" x="143" y="14"   />
+                <layer name="spot3" style="spot" x="166" y="47"  />
+                <layer name="spot4" style="spot" x="190" y="24"  />
+                <layer name="spot5" style="spot" x="178" y="68"  />
+                <layer name="spot6" style="spot" x="172" y="88"  />
+                <layer name="spot7" style="spot" x="172" y="108"  />
+                <layer name="spot8" style="spot" x="190" y="176"  />
+                <layer name="spot9" style="spot" x="168" y="177"  />`
+                <layer name="spot10" style="spot" x="142" y="178"  />
+                <layer name="spot11" style="spot" x="128" y="155"  />
+                <layer name="spot12" style="spot" x="70" y="170"  />
+                <layer name="spot13" style="spot" x="54" y="170"  />
+                <layer name="spot14" style="spot" x="38" y="168"  />
+                <layer name="spot15" style="spot" x="22" y="150"  />
+                <layer name="spot16" style="spot" x="22" y="33"  />
+                <layer name="spot17" style="spot" x="56" y="33"  />
+
+                <layer name="activespot" type="container" width="8" height="8" bgcolor="0x9a0004" bgalpha="1.0" scale="0.5" bgroundedge="4" align="lefttop" edge="center" zorder="3" visible="false"/>
+            </layer>
+        </layer>
+    </layer>
+
+<!-- 地图点中相同的代码，都写在了style里面，修改的时候只需要修改style里面的代码，提高了效率。在onclick里，先是用subtxt得出spot后面的数字，也就是index，然后检查是否点击的热点就是当前场景，因为没有必要点击当前场景的热点又载入一遍，如果是点击其他的热点，则载入其他场景，载入场景的loadscene中利用了之前得到的spotid，这样就不用每次都写场景的名字了。-->
+     <style name="spot" type="container" width="8" height="8" bgcolor="0xcf9640" bgalpha="1.0" bgroundedge="4" alpha="1.0" scale="0.5" align="lefttop" handcursor="true" visible="true" zorder="2" onclick="subtxt(spotid,get(name),4,2);if(spotid != scene[get(xml.scene)].index,  loadscene(get(scene[get(spotid)].name),null,MERGE,BLEND(1)); );" bgcapture="true" />  
+
+    <!-- 激活热点 - %1 = 当前雷达的方向值heading -->
+    <action name="activatespot">  
+    <!-- 因此绿色地图点会在每次激活时替换蓝色普通地图点，因此每次激活之前，首先保证所有蓝色地图点是可见的，如果没有下面这个代码，则会使得上一个场景的蓝色地图点消失，这里用的是一个循环语句-->  
+    for(set(i,0),i LT scene.count,inc(i),  
+    txtadd(spotname,'spot',get(i));  
+    set(layer[get(spotname)].visible, true);  
+    );  
+    <!-- 将当前热点的坐标复制到雷达和激活点的坐标，直接利用当前场景的index，反过来得到layer的名字，这样就使得这个activetespot的参数只要一个就可以了-->  
+    txtadd(spotidnow,'spot',get(scene[get(xml.scene)].index)); 
+    set(x, calc(layer[get(spotidnow)].x + 2));
+    set(y, calc(layer[get(spotidnow)].y + 3));
+    set(radarx, calc(layer[get(spotidnow)].x + 2));
+    set(radary, calc(layer[get(spotidnow)].y + 2));
+    copy(layer[radar].x, x);  
+    copy(layer[radar].y, y);  
+    copy(layer[activespot].x, radarx);  
+    copy(layer[activespot].y, radary);  
+  
+    <!-- 将第二个参数赋值到雷达的heading -->  
+    set(layer[radar].heading, %1);  
+  
+        <!-- 显示雷达和绿色激活热点，以及隐藏当前场景的地图点 -->  
+    set(layer[radar].visible, true);  
+    set(layer[activespot].visible, true);  
+    set(layer[get(spotidnow)].visible, false);  
+    </action>  
+
+    <action name="stopallsound">
+        stopsound(scene1sound);
+        stopsound(scene2sound);
+        stopsound(scene3sound);
+        stopsound(scene4.1sound);
+        stopsound(scene5.1sound);
+        stopsound(scene5.3sound);
+        stopsound(scene6sound);
+        stopsound(scene7sound);
+        stopsound(scene8.1sound);
+        stopsound(scene9sound);
+        stopsound(scene10sound);
+        stopsound(scene11sound);
+        stopsound(scene12.1sound);
+        stopsound(scene12.2sound);
+
+    </action>
+	<scene name="scene_Q1" title="1序厅" onstart="stopallsound();activatespot(0);tween(sound[bg].volume, 0.5);playsound(scene1sound, include/sound/t1.mp3,1,tween(sound[bg].volume, 1));" havevrimage="true" thumburl="panos/Q1.tiles/thumb.jpg" lat="" lng="" heading="">
+        <view hlookat="0" vlookat="0" vlookatmax="45" vlookatmin="-40" fovtype="MFOV" fov="110" fovmin="50" fovmax="105" limitview="range" />
+
+		<preview url="panos/Q1.tiles/preview.jpg" />
+
+		<image type="CUBE" multires="true" tilesize="512" if="!webvr.isenabled">
+			<level tiledimagewidth="4864" tiledimageheight="4864">
+				<cube url="panos/Q1.tiles/%s/l4/%0v/l4_%s_%0v_%0h.jpg" />
+			</level>
+			<level tiledimagewidth="2304" tiledimageheight="2304">
+				<cube url="panos/Q1.tiles/%s/l3/%0v/l3_%s_%0v_%0h.jpg" />
+			</level>
+			<level tiledimagewidth="1152" tiledimageheight="1152">
+				<cube url="panos/Q1.tiles/%s/l2/%0v/l2_%s_%0v_%0h.jpg" />
+			</level>
+			<level tiledimagewidth="640" tiledimageheight="640">
+				<cube url="panos/Q1.tiles/%s/l1/%0v/l1_%s_%0v_%0h.jpg" />
+			</level>
+		</image>
+
+		<image if="webvr.isenabled">
+			<cube url="panos/Q1.tiles/vr/pano_%s.jpg" />
+		</image>
+
+		<!-- place your scene hotspots here -->
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="117.150" atv="10.497" linkedscene="scene_q2" />
+		<hotspot name="spot2" style="skin_hotspotstyle" ath="-145.611" atv="9.992" linkedscene="scene_q12_2" />
+        <hotspot name="hs1" style="hotspotAreaNormal" 
+                 depth="1000"
+                 polyline="false"
+                 scaleflying="true"
+                 tx="0"
+                 ty="0"
+                 tz="0"
+                 onclick="open_textbox(0,null,10%);"
+                 onhover="loadstyle(hotspotAreaHover);showtext(山东大学历史沿革图示);"
+                 onout="loadstyle(hotspotAreaNormal)"
+
+                 >
+            <point ath="-93.576343" atv="-19.535924" />
+            <point ath="-40.318803" atv="-13.053571" />
+            <point ath="-40.460537" atv="9.966497" />
+            <point ath="-93.174067" atv="17.228189" />
+        </hotspot>
+
+        <hotspot name="hs2" style="hotspotAreaNormal" 
+                 depth="1000"
+                 polyline="false"
+                 scaleflying="true"
+                 tx="0"
+                 ty="0"
+                 tz="0"
+                 onclick="open_textbox(1,null, 90%);"
+                 onhover="loadstyle(hotspotAreaHover);showtext(铭刻山大);"
+                 onout="loadstyle(hotspotAreaNormal)"
+                 >
+            <point ath="38.424495" atv="-12.562135" />
+            <point ath="106.198973" atv="-16.64967" />
+            <point ath="105.719766" atv="15.43843" />
+            <point ath="38.311118" atv="9.891906" />
+        </hotspot>
+	</scene>
+
+	<scene name="scene_Q2" title="2山东大学堂" onstart="stopallsound();activatespot(0);tween(sound[bg].volume, 0.5);playsound(scene2sound, include/sound/t2.mp3,1,tween(sound[bg].volume, 1));" havevrimage="true" thumburl="panos/Q2.tiles/thumb.jpg" lat="" lng="" heading="" onremovepano="stopsound(scene2sound);">
+
+        <view hlookat="181.853" vlookat="9.609" vlookatmax="45" vlookatmin="-50" fovtype="MFOV" fov="105.000" fovmin="50" fovmax="105" limitview="range" />
+
+		<preview url="panos/Q2.tiles/preview.jpg" />
+
+		<image type="CUBE" multires="true" tilesize="512" if="!webvr.isenabled">
+			<level tiledimagewidth="4864" tiledimageheight="4864">
+				<cube url="panos/Q2.tiles/%s/l4/%0v/l4_%s_%0v_%0h.jpg" />
+			</level>
+			<level tiledimagewidth="2304" tiledimageheight="2304">
+				<cube url="panos/Q2.tiles/%s/l3/%0v/l3_%s_%0v_%0h.jpg" />
+			</level>
+			<level tiledimagewidth="1152" tiledimageheight="1152">
+				<cube url="panos/Q2.tiles/%s/l2/%0v/l2_%s_%0v_%0h.jpg" />
+			</level>
+			<level tiledimagewidth="640" tiledimageheight="640">
+				<cube url="panos/Q2.tiles/%s/l1/%0v/l1_%s_%0v_%0h.jpg" />
+			</level>
+		</image>
+
+		<image if="webvr.isenabled">
+			<cube url="panos/Q2.tiles/vr/pano_%s.jpg" />
+		</image>
+
+		<!-- place your scene hotspots here -->
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="-2.451" atv="27.886" linkedscene="scene_q3" />
+		<hotspot name="spot2" style="skin_hotspotstyle" ath="-117.698" atv="23.206" linkedscene="scene_q1" />
+
+        <hotspot name="hs1" style="hotspotAreaNormal"  
+                 depth="1000"
+                 polyline="false"
+                 scaleflying="true"
+                 tx="0"
+                 ty="0"
+                 tz="0"
+                 onclick="open_textbox(0,null, 90%);"
+                 onhover="loadstyle(hotspotAreaHover);showtext(山东大学堂介绍);"
+                 onout="loadstyle(hotspotAreaNormal)"
+                 >
+            <point ath="-86.617751" atv="-41.953701" />
+            <point ath="-71.300199" atv="-39.709898" />
+            <point ath="-72.622401" atv="6.500665" />
+            <point ath="-86.726032" atv="6.593444" />
+        </hotspot>
+
+        <hotspot name="hs2" style="hotspotAreaNormal"  
+                 depth="1000"
+                 polyline="false"
+                 scaleflying="true"
+                 tx="0"
+                 ty="0"
+                 tz="0"
+                 onclick="open_textbox(0,scene_Q2_2);"
+                 onhover="loadstyle(hotspotAreaHover);showtext(《试办山东大学堂奏折》及光绪皇帝批复);"
+                 onout="loadstyle(hotspotAreaNormal)"
+                 >
+            <point ath="-82.220157" atv="10.416776" />
+            <point ath="-17.052799" atv="5.715266" />
+            <point ath="-14.245698" atv="8.144535" />
+            <point ath="-13.911669" atv="11.140521" />
+            <point ath="-78.908724" atv="35.966945" />
+            <point ath="-82.431113" atv="27.777517" />
+        </hotspot>
+	</scene>
+
+	<scene name="scene_Q3" title="3省立山东大学" onstart="stopallsound();activatespot(0);tween(sound[bg].volume, 0.5);playsound(scene3sound,  include/sound/t3.mp3,1,tween(sound[bg].volume, 1));" havevrimage="true" thumburl="panos/Q3.tiles/thumb.jpg" lat="" lng="" heading="" onremovepano="stopsound(scene3sound);">
+
+        <view hlookat="93.051" vlookat="9.196" vlookatmax="45" vlookatmin="-50" fovtype="MFOV" fov="105.000" fovmin="50" fovmax="105" limitview="range" />
+
+		<preview url="panos/Q3.tiles/preview.jpg" />
+
+		<image type="CUBE" multires="true" tilesize="512" if="!webvr.isenabled">
+			<level tiledimagewidth="4864" tiledimageheight="4864">
+				<cube url="panos/Q3.tiles/%s/l4/%0v/l4_%s_%0v_%0h.jpg" />
+			</level>
+			<level tiledimagewidth="2304" tiledimageheight="2304">
+				<cube url="panos/Q3.tiles/%s/l3/%0v/l3_%s_%0v_%0h.jpg" />
+			</level>
+			<level tiledimagewidth="1152" tiledimageheight="1152">
+				<cube url="panos/Q3.tiles/%s/l2/%0v/l2_%s_%0v_%0h.jpg" />
+			</level>
+			<level tiledimagewidth="640" tiledimageheight="640">
+				<cube url="panos/Q3.tiles/%s/l1/%0v/l1_%s_%0v_%0h.jpg" />
+			</level>
+		</image>
+
+		<image if="webvr.isenabled">
+			<cube url="panos/Q3.tiles/vr/pano_%s.jpg" />
+		</image>
+
+		<!-- place your scene hotspots here -->
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="102.366" atv="14.379" linkedscene="scene_q4_1" />
+		<hotspot name="spot2" style="skin_hotspotstyle" ath="179.333" atv="24.721" linkedscene="scene_q2" />
+        <hotspot name="hs1" style="hotspotAreaNormal"  
+                 depth="1000"
+                 polyline="false"
+                 scaleflying="true"
+                 tx="0"
+                 ty="0"
+                 tz="0"
+                 onclick="open_textbox(0,null,90%);"
+                 onhover="loadstyle(hotspotAreaHover);showtext(省立山东大学介绍);"
+                 onout="loadstyle(hotspotAreaNormal)"
+                 >
+            <point ath="56.712232" atv="-45.890254" />
+            <point ath="63.38819" atv="-36.624382" />
+            <point ath="63.323151" atv="-40.495289" />
+            <point ath="70.304067" atv="-30.841234" />
+            <point ath="70.479587" atv="16.178013" />
+            <point ath="64.355137" atv="20.521617" />
+            <point ath="64.088827" atv="30.547294" />
+            <point ath="57.418101" atv="37.503822" />
+        </hotspot>
+
+        <hotspot name="hs2" style="hotspotAreaNormal"  
+                 depth="1000"
+                 polyline="false"
+                 scaleflying="true"
+                 tx="0"
+                 ty="0"
+                 tz="0"
+                 onclick="open_textbox(1,null);"
+                 onhover="loadstyle(hotspotAreaHover);showtext(山东大学堂第一任校长唐绍仪);"
+                 onout="loadstyle(hotspotAreaNormal)"
+                 >
+            <point ath="-134.73875" atv="-33.040199" />
+            <point ath="-122.289643" atv="-38.991396" />
+            <point ath="-122.197226" atv="-16.92228" />
+            <point ath="-134.566514" atv="-13.483847" />
+        </hotspot>
+
+        <hotspot name="hs3" style="hotspotAreaNormal"  
+                 depth="1000"
+                 polyline="false"
+                 scaleflying="true"
+                 tx="0"
+                 ty="0"
+                 tz="0"
+                 onclick="open_textbox(2,null);"
+                 onhover="loadstyle(hotspotAreaHover);showtext(山东大学最早的毕业证);"
+                 onout="loadstyle(hotspotAreaNormal)"
+                 >
+            <point ath="-49.02176" atv="-11.887701" />
+            <point ath="-38.961498" atv="-9.712725" />
+            <point ath="-39.538236" atv="5.604524" />
+            <point ath="-48.599521" atv="5.803507" />
+        </hotspot>
+	</scene>
+
+	<scene name="scene_Q4_1" title="4.1国立青岛大学" onstart="stopallsound();activatespot(180);tween(sound[bg].volume, 0.5);playsound(scene4.1sound,  include/sound/t4.1.mp3,1,tween(sound[bg].volume, 1));" havevrimage="true" thumburl="panos/Q4_1.tiles/thumb.jpg" lat="" lng="" heading="" onremovepano="stopsound(scene4.1sound);">
+
+        <view hlookat="-116.404" vlookat="3.471" vlookatmax="45" vlookatmin="-55" fovtype="MFOV" fov="105.000" fovmin="50" fovmax="105" limitview="range" />
+
+		<preview url="panos/Q4_1.tiles/preview.jpg" />
+
+		<image type="CUBE" multires="true" tilesize="512" if="!webvr.isenabled">
+			<level tiledimagewidth="4864" tiledimageheight="4864">
+				<cube url="panos/Q4_1.tiles/%s/l4/%0v/l4_%s_%0v_%0h.jpg" />
+			</level>
+			<level tiledimagewidth="2304" tiledimageheight="2304">
+				<cube url="panos/Q4_1.tiles/%s/l3/%0v/l3_%s_%0v_%0h.jpg" />
+			</level>
+			<level tiledimagewidth="1152" tiledimageheight="1152">
+				<cube url="panos/Q4_1.tiles/%s/l2/%0v/l2_%s_%0v_%0h.jpg" />
+			</level>
+			<level tiledimagewidth="640" tiledimageheight="640">
+				<cube url="panos/Q4_1.tiles/%s/l1/%0v/l1_%s_%0v_%0h.jpg" />
+			</level>
+		</image>
+
+		<image if="webvr.isenabled">
+			<cube url="panos/Q4_1.tiles/vr/pano_%s.jpg" />
+		</image>
+
+		<!-- place your scene hotspots here -->
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="-80.263" atv="26.984" linkedscene="scene_q4_2" />
+		<hotspot name="spot2" style="skin_hotspotstyle" ath="-177.039" atv="26.620" linkedscene="scene_q3" />
+        <hotspot name="hs1" style="hotspotAreaNormal"  
+                 depth="1000"
+                 polyline="false"
+                 scaleflying="true"
+                 tx="0"
+                 ty="0"
+                 tz="0"
+                 onclick="open_textbox(0,null,90%);"
+                 onhover="loadstyle(hotspotAreaHover);showtext(国立青岛大学介绍);"
+                 onout="loadstyle(hotspotAreaNormal)"
+                 >
+            <point ath="-120.235491" atv="-54.906893" />
+            <point ath="-132.22381" atv="-45.106286" />
+            <point ath="-131.228404" atv="34.368461" />
+            <point ath="-118.58525" atv="40.800215" />
+        </hotspot>
+
+        <hotspot name="hs2" style="hotspotAreaNormal"  
+                 depth="1000"
+                 polyline="false"
+                 scaleflying="true"
+                 tx="0"
+                 ty="0"
+                 tz="0"
+                 onclick="open_textbox(1,null);"
+                 onhover="loadstyle(hotspotAreaHover);showtext(在私立青岛大学求学时的罗荣桓);"
+                 onout="loadstyle(hotspotAreaNormal)"
+                 >
+            <point ath="-40.228256" atv="-39.624586" />
+            <point ath="-40.226911" atv="-13.293977" />
+            <point ath="-19.186084" atv="-18.744707" />
+            <point ath="-20.040485" atv="-52.67677" />
+        </hotspot>
+	</scene>
+
+	<scene name="scene_Q4_2" title="4.2国立青岛大学" onstart="stopallsound();activatespot(180)" havevrimage="true" thumburl="panos/Q4_2.tiles/thumb.jpg" lat="" lng="" heading="">
+
+        <view hlookat="-4.874" vlookat="0.830" vlookatmax="45" vlookatmin="-40" fovtype="MFOV" fov="105.000" fovmin="50" fovmax="105" limitview="range" />
+
+		<preview url="panos/Q4_2.tiles/preview.jpg" />
+
+		<image type="CUBE" multires="true" tilesize="512" if="!webvr.isenabled">
+			<level tiledimagewidth="4864" tiledimageheight="4864">
+				<cube url="panos/Q4_2.tiles/%s/l4/%0v/l4_%s_%0v_%0h.jpg" />
+			</level>
+			<level tiledimagewidth="2304" tiledimageheight="2304">
+				<cube url="panos/Q4_2.tiles/%s/l3/%0v/l3_%s_%0v_%0h.jpg" />
+			</level>
+			<level tiledimagewidth="1152" tiledimageheight="1152">
+				<cube url="panos/Q4_2.tiles/%s/l2/%0v/l2_%s_%0v_%0h.jpg" />
+			</level>
+			<level tiledimagewidth="640" tiledimageheight="640">
+				<cube url="panos/Q4_2.tiles/%s/l1/%0v/l1_%s_%0v_%0h.jpg" />
+			</level>
+		</image>
+
+		<image if="webvr.isenabled">
+			<cube url="panos/Q4_2.tiles/vr/pano_%s.jpg" />
+		</image>
+
+		<!-- place your scene hotspots here -->
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="-15.076" atv="16.513" linkedscene="scene_q5_1" />
+		<hotspot name="spot2" style="skin_hotspotstyle" ath="3.212" atv="25.525" linkedscene="scene_q4_1" />
+        <hotspot name="hs1" style="hotspotAreaNormal"  
+                 depth="1000"
+                 polyline="false"
+                 scaleflying="true"
+                 tx="0"
+                 ty="0"
+                 tz="0"
+                 onclick="open_textbox(0,null);"
+                 onhover="loadstyle(hotspotAreaHover);showtext(国立青大文学院院长闻一多);"
+                 onout="loadstyle(hotspotAreaNormal)"
+                 >
+            <point ath="156.880386" atv="-12.700066" />
+            <point ath="167.805699" atv="-13.044301" />
+            <point ath="167.383988" atv="17.410664" />
+            <point ath="156.778761" atv="16.813931" />
+        </hotspot>
+
+        <hotspot name="hs2" style="hotspotAreaNormal"  
+                 depth="1000"
+                 polyline="false"
+                 scaleflying="true"
+                 tx="0"
+                 ty="0"
+                 tz="0"
+                 onclick="open_textbox(1,null);"
+                 onhover="loadstyle(hotspotAreaHover);showtext(国立青岛大学校长杨振声);"
+                 onout="loadstyle(hotspotAreaNormal)"
+                 >
+            <point ath="40.625769" atv="0.533814" />
+            <point ath="55.286205" atv="1.39679" />
+            <point ath="54.482352" atv="28.277463" />
+            <point ath="39.912855" atv="23.063568" />
+        </hotspot>
+	</scene>
+
+	<scene name="scene_Q5_1" title="5.1国立山东大学" onstart="stopallsound();activatespot(270);tween(sound[bg].volume, 0.5);playsound(scene5.1sound,  include/sound/t5.1.mp3,1,tween(sound[bg].volume, 1));" havevrimage="true" thumburl="panos/Q5_1.tiles/thumb.jpg" lat="" lng="" heading="" onremovepano="stopsound(scene5.1sound);">
+
+        <view hlookat="-86.449" vlookat="8.170" vlookatmax="55" vlookatmin="-55" fovtype="MFOV" fov="105.000" fovmin="50" fovmax="105" limitview="range" />
+
+		<preview url="panos/Q5_1.tiles/preview.jpg" />
+
+		<image type="CUBE" multires="true" tilesize="512" if="!webvr.isenabled">
+			<level tiledimagewidth="4864" tiledimageheight="4864">
+				<cube url="panos/Q5_1.tiles/%s/l4/%0v/l4_%s_%0v_%0h.jpg" />
+			</level>
+			<level tiledimagewidth="2304" tiledimageheight="2304">
+				<cube url="panos/Q5_1.tiles/%s/l3/%0v/l3_%s_%0v_%0h.jpg" />
+			</level>
+			<level tiledimagewidth="1152" tiledimageheight="1152">
+				<cube url="panos/Q5_1.tiles/%s/l2/%0v/l2_%s_%0v_%0h.jpg" />
+			</level>
+			<level tiledimagewidth="640" tiledimageheight="640">
+				<cube url="panos/Q5_1.tiles/%s/l1/%0v/l1_%s_%0v_%0h.jpg" />
+			</level>
+		</image>
+
+		<image if="webvr.isenabled">
+			<cube url="panos/Q5_1.tiles/vr/pano_%s.jpg" />
+		</image>
+
+		<!-- place your scene hotspots here -->
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="-69.274" atv="28.510" linkedscene="scene_q5_2" />
+		<hotspot name="spot2" style="skin_hotspotstyle" ath="156.447" atv="29.216" linkedscene="scene_q4_2" />
+        <hotspot name="hs1" style="hotspotAreaNormal"  
+                 depth="1000"
+                 polyline="false"
+                 scaleflying="true"
+                 tx="0"
+                 ty="0"
+                 tz="0"
+                 onclick="open_textbox(0,null,90%);"
+                 onhover="loadstyle(hotspotAreaHover);showtext(国立山东大学（上）);"
+                 onout="loadstyle(hotspotAreaNormal)"
+                 >
+            <point ath="-95.917739" atv="-45.175047" />
+            <point ath="-117.952671" atv="-35.791599" />
+            <point ath="-117.577028" atv="26.381365" />
+            <point ath="-94.67496" atv="28.022666" />
+        </hotspot>
+        <hotspot name="hs2" style="hotspotAreaNormal"  
+                 depth="1000"
+                 polyline="false"
+                 scaleflying="true"
+                 tx="0"
+                 ty="0"
+                 tz="0"
+                 onclick="open_textbox(1,null);"
+                 onhover="loadstyle(hotspotAreaHover);showtext(国立青大教务长赵太侔);"
+                 onout="loadstyle(hotspotAreaNormal)"
+                 >
+            <point ath="59.860377" atv="-34.771883" />
+            <point ath="80.618337" atv="-43.155079" />
+            <point ath="80.838928" atv="-10.480532" />
+            <point ath="60.408415" atv="-6.557653" />
+        </hotspot>
+	</scene>
+
+	<scene name="scene_Q5_2" title="5.2国立山东大学" onstart="stopallsound();activatespot(180)" havevrimage="true" thumburl="panos/Q5_2.tiles/thumb.jpg" lat="" lng="" heading="">
+
+        <view hlookat="12.333" vlookat="4.251" vlookatmax="45" vlookatmin="-40" fovtype="MFOV" fov="105.000" fovmin="50" fovmax="105" limitview="range" />
+
+		<preview url="panos/Q5_2.tiles/preview.jpg" />
+
+		<image type="CUBE" multires="true" tilesize="512" if="!webvr.isenabled">
+			<level tiledimagewidth="4864" tiledimageheight="4864">
+				<cube url="panos/Q5_2.tiles/%s/l4/%0v/l4_%s_%0v_%0h.jpg" />
+			</level>
+			<level tiledimagewidth="2304" tiledimageheight="2304">
+				<cube url="panos/Q5_2.tiles/%s/l3/%0v/l3_%s_%0v_%0h.jpg" />
+			</level>
+			<level tiledimagewidth="1152" tiledimageheight="1152">
+				<cube url="panos/Q5_2.tiles/%s/l2/%0v/l2_%s_%0v_%0h.jpg" />
+			</level>
+			<level tiledimagewidth="640" tiledimageheight="640">
+				<cube url="panos/Q5_2.tiles/%s/l1/%0v/l1_%s_%0v_%0h.jpg" />
+			</level>
+		</image>
+
+		<image if="webvr.isenabled">
+			<cube url="panos/Q5_2.tiles/vr/pano_%s.jpg" />
+		</image>
+
+		<!-- place your scene hotspots here -->
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="-62.513" atv="26.959" linkedscene="scene_q5_3" />
+		<hotspot name="spot2" style="skin_hotspotstyle" ath="-173.203" atv="28.861" linkedscene="scene_q5_1" />
+        <hotspot name="hs1" style="hotspotAreaNormal"  
+                 depth="1000"
+                 polyline="false"
+                 scaleflying="true"
+                 tx="0"
+                 ty="0"
+                 tz="0"
+                 onclick="open_textbox(0,null);"
+                 onhover="loadstyle(hotspotAreaHover);showtext(物理学教授王淦昌);"
+                 onout="loadstyle(hotspotAreaNormal)"
+                 >
+            <point ath="46.883841" atv="-39.748127" />
+            <point ath="63.860921" atv="-27.335773" />
+            <point ath="63.817382" atv="-6.957664" />
+            <point ath="46.977752" atv="-11.827735" />
+        </hotspot>
+	</scene>
+
+	<scene name="scene_Q5_3" title="5.3国立山东大学" onstart="stopallsound();activatespot(0);tween(sound[bg].volume, 0.5);playsound(scene5.3sound,  include/sound/t5.3.mp3,1,tween(sound[bg].volume, 1));" havevrimage="true" thumburl="panos/Q5_3.tiles/thumb.jpg" lat="" lng="" heading="" onremovepano="stopsound(scene5.3sound);">
+
+        <view hlookat="0" vlookat="0" vlookatmax="45" vlookatmin="-40" fovtype="MFOV" fov="110" fovmin="50" fovmax="105" limitview="range" />
+
+		<preview url="panos/Q5_3.tiles/preview.jpg" />
+
+		<image type="CUBE" multires="true" tilesize="512" if="!webvr.isenabled">
+			<level tiledimagewidth="4864" tiledimageheight="4864">
+				<cube url="panos/Q5_3.tiles/%s/l4/%0v/l4_%s_%0v_%0h.jpg" />
+			</level>
+			<level tiledimagewidth="2304" tiledimageheight="2304">
+				<cube url="panos/Q5_3.tiles/%s/l3/%0v/l3_%s_%0v_%0h.jpg" />
+			</level>
+			<level tiledimagewidth="1152" tiledimageheight="1152">
+				<cube url="panos/Q5_3.tiles/%s/l2/%0v/l2_%s_%0v_%0h.jpg" />
+			</level>
+			<level tiledimagewidth="640" tiledimageheight="640">
+				<cube url="panos/Q5_3.tiles/%s/l1/%0v/l1_%s_%0v_%0h.jpg" />
+			</level>
+		</image>
+
+		<image if="webvr.isenabled">
+			<cube url="panos/Q5_3.tiles/vr/pano_%s.jpg" />
+		</image>
+
+		<!-- place your scene hotspots here -->
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="169.082" atv="27.939" linkedscene="scene_q6" />
+		<hotspot name="spot2" style="skin_hotspotstyle" ath="67.277" atv="27.859" linkedscene="scene_q5_2" />
+		<hotspot name="hs1" style="hotspotAreaNormal"  
+                 depth="1000"
+                 polyline="false"
+                 scaleflying="true"
+                 tx="0"
+                 ty="0"
+                 tz="0"
+                 onclick="open_textbox(0,null,90%);"
+                 onhover="loadstyle(hotspotAreaHover);showtext(国立山东大学（下）);"
+                 onout="loadstyle(hotspotAreaNormal)"
+                 >
+            <point ath="-34.89402" atv="-30.574814" />
+            <point ath="-21.355012" atv="-36.377009" />
+            <point ath="-21.288319" atv="11.598291" />
+            <point ath="-34.338331" atv="11.299363" />
+        </hotspot>
+
+        <hotspot name="hs2" style="hotspotAreaNormal"  
+                 depth="1000"
+                 polyline="false"
+                 scaleflying="true"
+                 tx="0"
+                 ty="0"
+                 tz="0"
+                 onclick="open_textbox(1,null);"
+                 onhover="loadstyle(hotspotAreaHover);showtext(臧克家);"
+                 onout="loadstyle(hotspotAreaNormal)"
+                 >
+            <point ath="82.974252" atv="3.174537" />
+            <point ath="90.156183" atv="3.299668" />
+            <point ath="90.159612" atv="14.847954" />
+            <point ath="82.965165" atv="14.352458" />
+        </hotspot>
+
+	</scene>
+
+	<scene name="scene_Q6" title="6齐鲁大学" onstart="stopallsound();activatespot(270);tween(sound[bg].volume, 0.5);playsound(scene6sound,  include/sound/t6.mp3,1,tween(sound[bg].volume, 1));" havevrimage="true" thumburl="panos/Q6.tiles/thumb.jpg" lat="" lng="" heading="" onremovepano="stopsound(scene6sound);">
+
+        <view hlookat="-182.229" vlookat="9.194" vlookatmax="45" vlookatmin="-40" fovtype="MFOV" fov="105.000" fovmin="50" fovmax="105" limitview="range" />
+
+		<preview url="panos/Q6.tiles/preview.jpg" />
+
+		<image type="CUBE" multires="true" tilesize="512" if="!webvr.isenabled">
+			<level tiledimagewidth="4864" tiledimageheight="4864">
+				<cube url="panos/Q6.tiles/%s/l4/%0v/l4_%s_%0v_%0h.jpg" />
+			</level>
+			<level tiledimagewidth="2304" tiledimageheight="2304">
+				<cube url="panos/Q6.tiles/%s/l3/%0v/l3_%s_%0v_%0h.jpg" />
+			</level>
+			<level tiledimagewidth="1152" tiledimageheight="1152">
+				<cube url="panos/Q6.tiles/%s/l2/%0v/l2_%s_%0v_%0h.jpg" />
+			</level>
+			<level tiledimagewidth="640" tiledimageheight="640">
+				<cube url="panos/Q6.tiles/%s/l1/%0v/l1_%s_%0v_%0h.jpg" />
+			</level>
+		</image>
+
+		<image if="webvr.isenabled">
+			<cube url="panos/Q6.tiles/vr/pano_%s.jpg" />
+		</image>
+
+		<!-- place your scene hotspots here -->
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="-100.636" atv="22.975" linkedscene="scene_q7_1" />
+		<hotspot name="spot2" style="skin_hotspotstyle" ath="98.897" atv="31.323" linkedscene="scene_q5_3" />
+        <hotspot name="hs1" style="hotspotAreaNormal"  
+                 depth="1000"
+                 polyline="false"
+                 scaleflying="true"
+                 tx="0"
+                 ty="0"
+                 tz="0"
+                 onclick="open_textbox(0,null,90%);"
+                 onhover="loadstyle(hotspotAreaHover);showtext(齐鲁大学介绍);"
+                 onout="loadstyle(hotspotAreaNormal)"
+                 >
+            <point ath="-173.27433" atv="-25.425916" />
+            <point ath="-157.832163" atv="-21.798295" />
+            <point ath="-157.539659" atv="29.002174" />
+            <point ath="-172.256972" atv="31.711722" />
+        </hotspot>
+	</scene>
+
+	<scene name="scene_Q7_1" title="7山东大学（青岛）" onstart="stopallsound();activatespot(180);tween(sound[bg].volume, 0.5);playsound(scene7sound, include/sound/t7.mp3,1,tween(sound[bg].volume, 1));" havevrimage="true" thumburl="panos/Q7_1.tiles/thumb.jpg" lat="" lng="" heading="" onremovepano="stopsound(scene7sound);">
+
+        <view hlookat="270.074" vlookat="1.853" vlookatmax="50" vlookatmin="-55" fovtype="MFOV" fov="105.000" fovmin="50" fovmax="105" limitview="range" />
+
+		<preview url="panos/Q7_1.tiles/preview.jpg" />
+
+		<image type="CUBE" multires="true" tilesize="512" if="!webvr.isenabled">
+			<level tiledimagewidth="4864" tiledimageheight="4864">
+				<cube url="panos/Q7_1.tiles/%s/l4/%0v/l4_%s_%0v_%0h.jpg" />
+			</level>
+			<level tiledimagewidth="2304" tiledimageheight="2304">
+				<cube url="panos/Q7_1.tiles/%s/l3/%0v/l3_%s_%0v_%0h.jpg" />
+			</level>
+			<level tiledimagewidth="1152" tiledimageheight="1152">
+				<cube url="panos/Q7_1.tiles/%s/l2/%0v/l2_%s_%0v_%0h.jpg" />
+			</level>
+			<level tiledimagewidth="640" tiledimageheight="640">
+				<cube url="panos/Q7_1.tiles/%s/l1/%0v/l1_%s_%0v_%0h.jpg" />
+			</level>
+		</image>
+
+		<image if="webvr.isenabled">
+			<cube url="panos/Q7_1.tiles/vr/pano_%s.jpg" />
+		</image>
+
+		<!-- place your scene hotspots here -->
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="149.645" atv="18.766" linkedscene="scene_q8_1" />
+		<hotspot name="spot2" style="skin_hotspotstyle" ath="-70.695" atv="22.113" linkedscene="scene_q6" />
+        <hotspot name="hs1" style="hotspotAreaNormal"  
+                 depth="1000"
+                 polyline="false"
+                 scaleflying="true"
+                 tx="0"
+                 ty="0"
+                 tz="0"
+                 onclick="open_textbox(0,null,90%);"
+                 onhover="loadstyle(hotspotAreaHover);showtext(山东大学（青岛）介绍);"
+                 onout="loadstyle(hotspotAreaNormal)"
+                 >
+            <point ath="-130.502734" atv="-42.194327" />
+            <point ath="-111.175867" atv="-51.62154" />
+            <point ath="-111.111604" atv="19.10872" />
+            <point ath="-131.549823" atv="15.398301" />
+        </hotspot>
+	</scene>
+
+	<scene name="scene_Q8_1" title="8.1山东大学（济南）" onstart="stopallsound();activatespot(80);tween(sound[bg].volume, 0.5);playsound(scene8.1sound, include/sound/t8.1.mp3,1,tween(sound[bg].volume, 1));" havevrimage="true" thumburl="panos/Q8_1.tiles/thumb.jpg" lat="" lng="" heading="" onremovepano="stopsound(scene8.1sound);">
+
+        <view hlookat="-73.206" vlookat="5.251" vlookatmax="45" vlookatmin="-55" fovtype="MFOV" fov="105.000" fovmin="50" fovmax="105" limitview="range" />
+
+		<preview url="panos/Q8_1.tiles/preview.jpg" />
+
+		<image type="CUBE" multires="true" tilesize="512" if="!webvr.isenabled">
+			<level tiledimagewidth="4864" tiledimageheight="4864">
+				<cube url="panos/Q8_1.tiles/%s/l4/%0v/l4_%s_%0v_%0h.jpg" />
+			</level>
+			<level tiledimagewidth="2304" tiledimageheight="2304">
+				<cube url="panos/Q8_1.tiles/%s/l3/%0v/l3_%s_%0v_%0h.jpg" />
+			</level>
+			<level tiledimagewidth="1152" tiledimageheight="1152">
+				<cube url="panos/Q8_1.tiles/%s/l2/%0v/l2_%s_%0v_%0h.jpg" />
+			</level>
+			<level tiledimagewidth="640" tiledimageheight="640">
+				<cube url="panos/Q8_1.tiles/%s/l1/%0v/l1_%s_%0v_%0h.jpg" />
+			</level>
+		</image>
+
+		<image if="webvr.isenabled">
+			<cube url="panos/Q8_1.tiles/vr/pano_%s.jpg" />
+		</image>
+
+		<!-- place your scene hotspots here -->
+        <!-- place your scene hotspots here -->
+        <hotspot name="spot1" style="skin_hotspotstyle" ath="-91.577" atv="14.378" linkedscene="scene_q8_2" />
+        <hotspot name="spot2" style="skin_hotspotstyle" ath="-30.314" atv="22.782" linkedscene="scene_q7_1" />
+        <hotspot name="hs1" style="hotspotAreaNormal"  
+                 depth="1000"
+                 polyline="false"
+                 scaleflying="true"
+                 tx="0"
+                 ty="0"
+                 tz="0"
+                 onclick="open_textbox(0,null,90%);"
+                 onhover="loadstyle(hotspotAreaHover);showtext(山东大学（济南）);"
+                 onout="loadstyle(hotspotAreaNormal)"
+                 >
+            <point ath="-129.412109" atv="-41.988442" />
+            <point ath="-116.761685" atv="-33.133771" />
+            <point ath="-116.751179" atv="15.124644" />
+            <point ath="-129.249692" atv="18.83565" />
+        </hotspot>
+
+        <hotspot name="hs2" style="hotspotAreaNormal"  
+                 depth="1000"
+                 polyline="false"
+                 scaleflying="true"
+                 tx="0"
+                 ty="0"
+                 tz="0"
+                 onclick="open_textbox(1,null,90%);"
+                 onhover="loadstyle(hotspotAreaHover);showtext(“山东大学”校牌字体来历);"
+                 onout="loadstyle(hotspotAreaNormal)"
+                 >
+            <point ath="144.667063" atv="-34.004976" />
+            <point ath="162.431225" atv="-42.386508" />
+            <point ath="162.466739" atv="0.602085" />
+            <point ath="144.750795" atv="-0.107734" />
+        </hotspot>
+	</scene>
+
+	<scene name="scene_Q8_2" title="8.2山东大学（济南）" onstart="stopallsound();activatespot(0)" havevrimage="true" thumburl="panos/Q8_2.tiles/thumb.jpg" lat="" lng="" heading="">
+
+        <view hlookat="7.418" vlookat="-2.831" vlookatmax="45" vlookatmin="-55" fovtype="MFOV" fov="105.000" fovmin="50" fovmax="105" limitview="range" />
+
+		<preview url="panos/Q8_2.tiles/preview.jpg" />
+
+		<image type="CUBE" multires="true" tilesize="512" if="!webvr.isenabled">
+			<level tiledimagewidth="4864" tiledimageheight="4864">
+				<cube url="panos/Q8_2.tiles/%s/l4/%0v/l4_%s_%0v_%0h.jpg" />
+			</level>
+			<level tiledimagewidth="2304" tiledimageheight="2304">
+				<cube url="panos/Q8_2.tiles/%s/l3/%0v/l3_%s_%0v_%0h.jpg" />
+			</level>
+			<level tiledimagewidth="1152" tiledimageheight="1152">
+				<cube url="panos/Q8_2.tiles/%s/l2/%0v/l2_%s_%0v_%0h.jpg" />
+			</level>
+			<level tiledimagewidth="640" tiledimageheight="640">
+				<cube url="panos/Q8_2.tiles/%s/l1/%0v/l1_%s_%0v_%0h.jpg" />
+			</level>
+		</image>
+
+		<image if="webvr.isenabled">
+			<cube url="panos/Q8_2.tiles/vr/pano_%s.jpg" />
+		</image>
+
+        <hotspot name="spot1" style="skin_hotspotstyle" ath="165.291" atv="14.126" linkedscene="scene_q8_1" />
+        <hotspot name="spot2" style="skin_hotspotstyle" ath="-141.401" atv="15.814" linkedscene="scene_q8_3" />
+        <hotspot name="hs1" style="hotspotAreaNormal"  
+                 depth="1000"
+                 polyline="false"
+                 scaleflying="true"
+                 tx="0"
+                 ty="0"
+                 tz="0"
+                 onclick="open_textbox(0,null);"
+                 onhover="loadstyle(hotspotAreaHover);showtext(八马同槽介绍);"
+                 onout="loadstyle(hotspotAreaNormal)"
+                 >
+            <point ath="-38.578811" atv="-33.740615" />
+            <point ath="-38.55261" atv="-33.733999" />
+            <point ath="-29.808864" atv="-37.714977" />
+            <point ath="-3.067675" atv="-45.907559" />
+            <point ath="-3.380754" atv="-4.84029" />
+            <point ath="-29.745828" atv="-4.259736" />
+            <point ath="-29.727058" atv="-2.014162" />
+            <point ath="-38.561949" atv="-2.256505" />
+        </hotspot>
+	</scene>
+
+	<scene name="scene_Q8_3" title="8.3山东大学（济南）" onstart="stopallsound();activatespot(270)" havevrimage="true" thumburl="panos/Q8_3.tiles/thumb.jpg" lat="" lng="" heading="">
+
+        <view hlookat="-260.626" vlookat="3.075" vlookatmax="45" vlookatmin="-40" fovtype="MFOV" fov="105.000" fovmin="50" fovmax="105" limitview="range" />
+
+		<preview url="panos/Q8_3.tiles/preview.jpg" />
+
+		<image type="CUBE" multires="true" tilesize="512" if="!webvr.isenabled">
+			<level tiledimagewidth="4864" tiledimageheight="4864">
+				<cube url="panos/Q8_3.tiles/%s/l4/%0v/l4_%s_%0v_%0h.jpg" />
+			</level>
+			<level tiledimagewidth="2304" tiledimageheight="2304">
+				<cube url="panos/Q8_3.tiles/%s/l3/%0v/l3_%s_%0v_%0h.jpg" />
+			</level>
+			<level tiledimagewidth="1152" tiledimageheight="1152">
+				<cube url="panos/Q8_3.tiles/%s/l2/%0v/l2_%s_%0v_%0h.jpg" />
+			</level>
+			<level tiledimagewidth="640" tiledimageheight="640">
+				<cube url="panos/Q8_3.tiles/%s/l1/%0v/l1_%s_%0v_%0h.jpg" />
+			</level>
+		</image>
+
+		<image if="webvr.isenabled">
+			<cube url="panos/Q8_3.tiles/vr/pano_%s.jpg" />
+		</image>
+
+		<!-- place your scene hotspots here -->
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="95.233" atv="20.787" linkedscene="scene_q9" />
+		<hotspot name="spot2" style="skin_hotspotstyle" ath="-172.222" atv="23.087" linkedscene="scene_q8_2" />
+        <hotspot name="hs1" style="hotspotAreaNormal"  
+                 depth="1000"
+                 polyline="false"
+                 scaleflying="true"
+                 tx="0"
+                 ty="0"
+                 tz="0"
+                 onclick="open_textbox(0,null,90%);"
+                 onhover="loadstyle(hotspotAreaHover);showtext(山东大学复校);"
+                 onout="loadstyle(hotspotAreaNormal)"
+                 >
+            <point ath="-134.218767" atv="-38.389094" />
+            <point ath="-121.105214" atv="-28.493816" />
+            <point ath="-121.615269" atv="-13.6727" />
+            <point ath="-134.567871" atv="-13.465353" />
+        </hotspot>
+	</scene>
+
+	<scene name="scene_Q9" title="9山东医科大学" onstart="stopallsound();activatespot(0);tween(sound[bg].volume, 0.5);playsound(scene9sound,  include/sound/t9.mp3,1,tween(sound[bg].volume, 1));" havevrimage="true" thumburl="panos/Q9.tiles/thumb.jpg" lat="" lng="" heading="" onremovepano="stopsound(scene9sound);">
+
+        <view hlookat="-98.632" vlookat="1.209" vlookatmax="45" vlookatmin="-40" fovtype="MFOV" fov="105.000" fovmin="50" fovmax="105" limitview="range" />
+
+		<preview url="panos/Q9.tiles/preview.jpg" />
+
+		<image type="CUBE" multires="true" tilesize="512" if="!webvr.isenabled">
+			<level tiledimagewidth="4864" tiledimageheight="4864">
+				<cube url="panos/Q9.tiles/%s/l4/%0v/l4_%s_%0v_%0h.jpg" />
+			</level>
+			<level tiledimagewidth="2304" tiledimageheight="2304">
+				<cube url="panos/Q9.tiles/%s/l3/%0v/l3_%s_%0v_%0h.jpg" />
+			</level>
+			<level tiledimagewidth="1152" tiledimageheight="1152">
+				<cube url="panos/Q9.tiles/%s/l2/%0v/l2_%s_%0v_%0h.jpg" />
+			</level>
+			<level tiledimagewidth="640" tiledimageheight="640">
+				<cube url="panos/Q9.tiles/%s/l1/%0v/l1_%s_%0v_%0h.jpg" />
+			</level>
+		</image>
+
+		<image if="webvr.isenabled">
+			<cube url="panos/Q9.tiles/vr/pano_%s.jpg" />
+		</image>
+
+		<!-- place your scene hotspots here -->
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="-103.074" atv="18.362" linkedscene="scene_q10" />
+		<hotspot name="spot2" style="skin_hotspotstyle" ath="-6.796" atv="18.199" linkedscene="scene_q8_3" />
+        <hotspot name="hs1" style="hotspotAreaNormal"  
+                 depth="1000"
+                 polyline="false"
+                 scaleflying="true"
+                 tx="0"
+                 ty="0"
+                 tz="0"
+                 onclick="open_textbox(0,null,90%);"
+                 onhover="loadstyle(hotspotAreaHover);showtext(山东医科大学介绍);"
+                 onout="loadstyle(hotspotAreaNormal)"
+                 >
+            <point ath="-131.901966" atv="-27.925928" />
+            <point ath="-120.916261" atv="-19.697521" />
+            <point ath="-122.125242" atv="13.893601" />
+            <point ath="-131.714746" atv="18.119219" />
+        </hotspot>
+	</scene>
+    <scene name="scene_Q10" title="10山东工业大学" onstart="stopallsound();activatespot(90);tween(sound[bg].volume, 0.5);playsound(scene10sound,  include/sound/t10.mp3,1,tween(sound[bg].volume, 1));" havevrimage="true" thumburl="panos/Q10.tiles/thumb.jpg" lat="" lng="" heading="" onremovepano="stopsound(scene10sound);">
+
+        <view hlookat="-25.805" vlookat="-4.609" vlookatmax="45" vlookatmin="-40" fovtype="MFOV" fov="105.000" fovmin="50" fovmax="105" limitview="range" />
+
+        <preview url="panos/Q10.tiles/preview.jpg" />
+
+        <image type="CUBE" multires="true" tilesize="512" if="!webvr.isenabled">
+            <level tiledimagewidth="4864" tiledimageheight="4864">
+                <cube url="panos/Q10.tiles/%s/l4/%0v/l4_%s_%0v_%0h.jpg" />
+            </level>
+            <level tiledimagewidth="2304" tiledimageheight="2304">
+                <cube url="panos/Q10.tiles/%s/l3/%0v/l3_%s_%0v_%0h.jpg" />
+            </level>
+            <level tiledimagewidth="1152" tiledimageheight="1152">
+                <cube url="panos/Q10.tiles/%s/l2/%0v/l2_%s_%0v_%0h.jpg" />
+            </level>
+            <level tiledimagewidth="640" tiledimageheight="640">
+                <cube url="panos/Q10.tiles/%s/l1/%0v/l1_%s_%0v_%0h.jpg" />
+            </level>
+        </image>
+
+        <image if="webvr.isenabled">
+            <cube url="panos/Q10.tiles/vr/pano_%s.jpg" />
+        </image>
+
+        <!-- place your scene hotspots here -->
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="-90.792" atv="14.850" linkedscene="scene_q11" />
+		<hotspot name="spot2" style="skin_hotspotstyle" ath="7.177" atv="21.693" linkedscene="scene_q9" />
+
+        <hotspot name="hs1" style="hotspotAreaNormal"  
+                 depth="1000"
+                 polyline="false"
+                 scaleflying="true"
+                 tx="0"
+                 ty="0"
+                 tz="0"
+                 onclick="open_textbox(0,null,90%);"
+                 onhover="loadstyle(hotspotAreaHover);showtext(山东工业大学介绍);"
+                 onout="loadstyle(hotspotAreaNormal)"
+                 >
+            <point ath="-44.011226" atv="-26.882959" />
+            <point ath="-33.264106" atv="-30.402209" />
+            <point ath="-31.413128" atv="-34.253098" />
+            <point ath="-19.29481" atv="-36.858609" />
+            <point ath="-19.897353" atv="32.237403" />
+            <point ath="-32.453487" atv="29.665354" />
+            <point ath="-33.464488" atv="19.480078" />
+            <point ath="-44.040579" atv="17.219844" />
+        </hotspot>
+
+    </scene>
+
+    <scene name="scene_Q11" title="11山东大学（三校合一）" onstart="stopallsound();activatespot(270);tween(sound[bg].volume, 0.5);playsound(scene11sound,  include/sound/t11.mp3,1,tween(sound[bg].volume, 1));" havevrimage="true" thumburl="panos/Q11.tiles/thumb.jpg" lat="" lng="" heading="" onremovepano="stopsound(scene11sound);">
+
+        <view hlookat="-87.853" vlookat="-3.210" vlookatmax="45" vlookatmin="-50" fovtype="MFOV" fov="105.000" fovmin="50" fovmax="105" limitview="range" />
+
+        <preview url="panos/Q11.tiles/preview.jpg" />
+
+        <image type="CUBE" multires="true" tilesize="512" if="!webvr.isenabled">
+            <level tiledimagewidth="4864" tiledimageheight="4864">
+                <cube url="panos/Q11.tiles/%s/l4/%0v/l4_%s_%0v_%0h.jpg" />
+            </level>
+            <level tiledimagewidth="2304" tiledimageheight="2304">
+                <cube url="panos/Q11.tiles/%s/l3/%0v/l3_%s_%0v_%0h.jpg" />
+            </level>
+            <level tiledimagewidth="1152" tiledimageheight="1152">
+                <cube url="panos/Q11.tiles/%s/l2/%0v/l2_%s_%0v_%0h.jpg" />
+            </level>
+            <level tiledimagewidth="640" tiledimageheight="640">
+                <cube url="panos/Q11.tiles/%s/l1/%0v/l1_%s_%0v_%0h.jpg" />
+            </level>
+        </image>
+
+        <image if="webvr.isenabled">
+            <cube url="panos/Q11.tiles/vr/pano_%s.jpg" />
+        </image>
+
+        <!-- place your scene hotspots here -->
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="60.102" atv="18.853" linkedscene="scene_q12_1" />
+        <hotspot name="spot2" style="skin_hotspotstyle" ath="-149.913" atv="12.891" linkedscene="scene_q10" />
+        <hotspot name="hs1" style="hotspotAreaNormal"  
+                 depth="1000"
+                 polyline="false"
+                 scaleflying="true"
+                 tx="0"
+                 ty="0"
+                 tz="0"
+                 onclick="open_textbox(0,null,90%);"
+                 onhover="loadstyle(hotspotAreaHover);showtext(山东大学（三校合一）);"
+                 onout="loadstyle(hotspotAreaNormal)"
+                 >
+            <point ath="-117.064688" atv="-36.866968" />
+            <point ath="-92.463121" atv="-42.263262" />
+            <point ath="-91.292948" atv="32.767227" />
+            <point ath="-116.406256" atv="30.682725" />
+        </hotspot>
+
+        <hotspot name="hs2" style="hotspotAreaNormal"  
+                 depth="1000"
+                 polyline="false"
+                 scaleflying="true"
+                 tx="0"
+                 ty="0"
+                 tz="0"
+                 onclick="open_textbox(1,null);"
+                 onhover="loadstyle(hotspotAreaHover);showtext(山东大学（三校合一）);"
+                 onout="loadstyle(hotspotAreaNormal)"
+                 >
+            <point ath="-78.166008" atv="-5.163635" />
+            <point ath="-56.121228" atv="-4.540059" />
+            <point ath="-55.987126" atv="14.143697" />
+            <point ath="-77.895313" atv="16.519702" />        
+        </hotspot>
+
+    </scene>
+
+    <scene name="scene_Q12_1" title="12.1尾厅" onstart="stopallsound();activatespot(90);tween(sound[bg].volume, 0.5);playsound(scene12.1sound,  include/sound/t12.1.mp3,1,tween(sound[bg].volume, 1));" havevrimage="true" thumburl="panos/Q12_1.tiles/thumb.jpg" lat="" lng="" heading="" onremovepano="stopsound(scene12.1sound);">
+
+        <view hlookat="-87.753" vlookat="0.906" vlookatmax="45" vlookatmin="-40" fovtype="MFOV" fov="105.000" fovmin="50" fovmax="105" limitview="range" />
+
+        <preview url="panos/Q12_1.tiles/preview.jpg" />
+
+        <image type="CUBE" multires="true" tilesize="512" if="!webvr.isenabled">
+            <level tiledimagewidth="4864" tiledimageheight="4864">
+                <cube url="panos/Q12_1.tiles/%s/l4/%0v/l4_%s_%0v_%0h.jpg" />
+            </level>
+            <level tiledimagewidth="2304" tiledimageheight="2304">
+                <cube url="panos/Q12_1.tiles/%s/l3/%0v/l3_%s_%0v_%0h.jpg" />
+            </level>
+            <level tiledimagewidth="1152" tiledimageheight="1152">
+                <cube url="panos/Q12_1.tiles/%s/l2/%0v/l2_%s_%0v_%0h.jpg" />
+            </level>
+            <level tiledimagewidth="640" tiledimageheight="640">
+                <cube url="panos/Q12_1.tiles/%s/l1/%0v/l1_%s_%0v_%0h.jpg" />
+            </level>
+        </image>
+
+        <image if="webvr.isenabled">
+            <cube url="panos/Q12_1.tiles/vr/pano_%s.jpg" />
+        </image>
+
+        <!-- place your scene hotspots here -->
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="-39.880" atv="9.859" linkedscene="scene_q12_2" />
+		<hotspot name="spot2" style="skin_hotspotstyle" ath="49.574" atv="9.318" linkedscene="scene_q12_2" />
+		<hotspot name="spot3" style="skin_hotspotstyle" ath="98.378" atv="8.978" linkedscene="scene_q11" />
+
+    </scene>
+
+    <scene name="scene_Q12_2" title="12.2尾厅" onstart="stopallsound();activatespot(270);tween(sound[bg].volume, 0.5);playsound(scene12.2sound,  include/sound/t12.2.mp3,1,tween(sound[bg].volume, 1));" havevrimage="true" thumburl="panos/Q12_2.tiles/thumb.jpg" lat="" lng="" heading="" onremovepano="stopsound(scene12.2sound);">
+
+        <view hlookat="-85.919" vlookat="2.167" vlookatmax="45" vlookatmin="-40" fovtype="MFOV" fov="105.000" fovmin="50" fovmax="105" limitview="range" />
+
+        <preview url="panos/Q12_2.tiles/preview.jpg" />
+
+        <image type="CUBE" multires="true" tilesize="512" if="!webvr.isenabled">
+            <level tiledimagewidth="4864" tiledimageheight="4864">
+                <cube url="panos/Q12_2.tiles/%s/l4/%0v/l4_%s_%0v_%0h.jpg" />
+            </level>
+            <level tiledimagewidth="2304" tiledimageheight="2304">
+                <cube url="panos/Q12_2.tiles/%s/l3/%0v/l3_%s_%0v_%0h.jpg" />
+            </level>
+            <level tiledimagewidth="1152" tiledimageheight="1152">
+                <cube url="panos/Q12_2.tiles/%s/l2/%0v/l2_%s_%0v_%0h.jpg" />
+            </level>
+            <level tiledimagewidth="640" tiledimageheight="640">
+                <cube url="panos/Q12_2.tiles/%s/l1/%0v/l1_%s_%0v_%0h.jpg" />
+            </level>
+        </image>
+
+        <image if="webvr.isenabled">
+            <cube url="panos/Q12_2.tiles/vr/pano_%s.jpg" />
+        </image>
+
+        <!-- place your scene hotspots here -->
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="-116.253" atv="4.829" linkedscene="scene_q1" />
+		<hotspot name="spot2" style="skin_hotspotstyle" ath="-35.781" atv="9.944" linkedscene="scene_q12_1" />
+		<hotspot name="spot3" style="skin_hotspotstyle" ath="36.552" atv="5.235" linkedscene="scene_q12_1" />
+
+    </scene>
+
+
+</krpano>
